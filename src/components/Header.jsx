@@ -1,4 +1,4 @@
-function Header({ user, onLogout }) {
+function Header({ user, onLogout, onAdd }) {
   // Роли: 0=гость, 1=админ, 2=менеджер, 3=клиент
   const getRoleName = (role) => {
     const roles = {
@@ -9,10 +9,10 @@ function Header({ user, onLogout }) {
     return roles[role] || 'Пользователь'
   }
 
-  // Обработка кнопки "Добавить"
-  const handleAdd = () => {
-    alert('Здесь будет форма добавления товара')
-  }
+//   // Обработка кнопки "Добавить"
+//   const handleAdd = () => {
+//     alert('Здесь будет форма добавления товара')
+//   }
 
   return (
     <header className="header">
@@ -27,16 +27,8 @@ function Header({ user, onLogout }) {
 
       {/* Справа — кнопки */}
       <div className="header-right">
-        {user.role === 1 && (
-          <button className="btn-add" onClick={handleAdd}>
-            + Добавить
-          </button>
-        )}
-        
-        {/* Кнопка "Назад" (выйти) */}
-        <button className="btn-back" onClick={onLogout}>
-          ← Назад
-        </button>
+        {user.role === 1 && onAdd && <button className="btn-add" onClick={onAdd}>+ Добавить</button>}
+        <button className="btn-back" onClick={onLogout}>Выйти ⇨</button>
       </div>
     </header>
   )

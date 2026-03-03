@@ -9,16 +9,17 @@ function AddProduct({ user, onLogout, isEdit = false }) {
   const [formData, setFormData] = useState({
     name_product: '',
     id_brand: '',
+    id_concentrat: '',
     description_product: '',
     volume_product: '',
     price_product: '',
     discount: '',
     gender_product: 'Unisex',
     image: 'notf',
-    status: 1,
-    quantity: ''
+    status: 0
   })
   const [brands, setBrands] = useState([])
+  const [concentrats, setConcentrats] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [imageFile, setImageFile] = useState(null)
@@ -26,6 +27,7 @@ function AddProduct({ user, onLogout, isEdit = false }) {
   // Загрузка брендов и данных товара (если редактирование)
   useEffect(() => {
     fetchBrands()
+    fetchConcentrats()
     if (isEdit && productId) {
       fetchProduct()
     }
@@ -38,6 +40,13 @@ function AddProduct({ user, onLogout, isEdit = false }) {
     } catch (err) { console.error(err) }
   }
 
+  const fetchConcentrats = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/products/concentrats/list')
+      if (res.ok) setConcentrats(await res.json())
+    } catch (err) { console.error(err) }
+  }
+
   const fetchProduct = async () => {
     try {
       const res = await fetch(`http://127.0.0.1:8000/api/products/${productId}`)
@@ -46,14 +55,14 @@ function AddProduct({ user, onLogout, isEdit = false }) {
         setFormData({
           name_product: data.name_product || '',
           id_brand: data.brand?.id_brand || '',
+          id_concentrat: data.concentrat?.id_concentrat || '',
           description_product: data.description_product || '',
           volume_product: data.volume_product || '',
           price_product: data.price_product || '',
           discount: data.discount || '',
           gender_product: data.gender_product || 'Unisex',
-          image: data.image || 'notf',
-          status: data.status ?? 1,
-          quantity: data.quantity || ''
+          image: data.image || 'notf.jpg',
+          status: data.status ?? 0
         })
       }
     } catch (err) { setError('Не удалось загрузить товар') }
@@ -78,14 +87,54 @@ function AddProduct({ user, onLogout, isEdit = false }) {
     setError('')
     
     try {
+    // 🔹 ВАЛИДАЦИЯ ПОЛЕЙ
+    
+    // 1. Проверка обязательных полей
+    if (!formData.name_product.trim()) {
+      throw new Error('Введите название парфюма')
+    }
+    if (!formData.id_brand) {
+      throw new Error('Выберите бренд')
+    }
+    if (!formData.id_concentrat) {
+      throw new Error('Выберите концентрацию')
+    }
+    if (!formData.volume_product || formData.volume_product <= 0) {
+      throw new Error('Объём должен быть больше 0')
+    }
+    if (!formData.price_product || formData.price_product <= 0) {
+      throw new Error('Цена должна быть больше 0 ₽')
+    }
+    
+    // 2. Проверка скидки: не может быть 100% или больше
+    const discount = formData.discount ? Number(formData.discount) : 0
+    if (discount < 0) {
+      throw new Error('Скидка не может быть отрицательной')
+    }
+    if (discount >= 100) {
+      throw new Error('Скидка не может быть 100% или больше')
+    }
+    
+    // 3. Проверка: цена со скидкой не должна быть 0
+    const finalPrice = formData.price_product * (1 - discount / 100)
+    if (finalPrice <= 0) {
+      throw new Error('Цена со скидкой не может быть 0 ₽')
+    }
+    
+    // 4. Проверка статуса
+    const status = Number(formData.status)
+    if (status !== 0 && status !== 1) {
+      throw new Error('Неверный статус товара')
+    }
+
       // 🔹 Подготовка данных
       const payload = {
         ...formData,
         id_brand: Number(formData.id_brand),
+        id_concentrat: Number(formData.id_concentrat),
         volume_product: Number(formData.volume_product),
         price_product: Number(formData.price_product),
         discount: formData.discount ? Number(formData.discount) : 0,
-        quantity: formData.quantity ? Number(formData.quantity) : 0,
         status: Number(formData.status)
       }
 
@@ -102,8 +151,7 @@ function AddProduct({ user, onLogout, isEdit = false }) {
       })
 
       if (!response.ok) throw new Error('Не удалось сохранить')
-      
-      navigate('/') // Возврат на главную
+      navigate('/')
     } catch (err) {
       setError(err.message)
     } finally {
@@ -116,22 +164,37 @@ function AddProduct({ user, onLogout, isEdit = false }) {
       <Header user={user} onLogout={onLogout} />
       
       <main className="content">
-        <h2>{isEdit ? '✏️ Редактировать товар' : '➕ Добавить товар'}</h2>
+        <h2>{isEdit ? 'Редактирование товара' : 'Добавление товара'}</h2>
         
         {error && <p className="error">{error}</p>}
         
         <form onSubmit={handleSubmit} className="product-form">
           <div className="form-group">
-            <label>Название *</label>
+            <label>Наименование парфюма *</label>
             <input name="name_product" value={formData.name_product} onChange={handleChange} required />
           </div>
           
-          <div className="form-group">
-            <label>Бренд *</label>
-            <select name="id_brand" value={formData.id_brand} onChange={handleChange} required>
-              <option value="">Выберите бренд</option>
-              {brands.map(b => <option key={b.id_brand} value={b.id_brand}>{b.name_brand}</option>)}
-            </select>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Бренд *</label>
+              <select name="id_brand" value={formData.id_brand} onChange={handleChange} required>
+                <option value="">Выберите бренд</option>
+                {brands.map(b => (
+                  <option key={b.id_brand} value={b.id_brand}>{b.name_brand}</option>
+                ))}
+              </select>
+            </div>
+            
+            {/* 🔹 Поле для концентрации */}
+            <div className="form-group">
+              <label>Концентрация *</label>
+              <select name="id_concentrat" value={formData.id_concentrat} onChange={handleChange} required>
+                <option value="">Выберите концентрацию</option>
+                {concentrats.map(c => (
+                  <option key={c.id_concentrat} value={c.id_concentrat}>{c.name_concentrat}</option>
+                ))}
+              </select>
+            </div>
           </div>
           
           <div className="form-group">
@@ -167,27 +230,23 @@ function AddProduct({ user, onLogout, isEdit = false }) {
           
           <div className="form-row">
             <div className="form-group">
-              <label>Количество на складе</label>
-              <input type="number" name="quantity" value={formData.quantity} onChange={handleChange} />
-            </div>
-            <div className="form-group">
               <label>Статус</label>
               <select name="status" value={formData.status} onChange={handleChange}>
-                <option value="1">Активен</option>
-                <option value="0">Неактивен</option>
+                <option value="0">Активен</option>
+                <option value="1">Неактивен</option>
               </select>
             </div>
           </div>
           
           <div className="form-group">
-            <label>Изображение</label>
-            <input type="file" name="image" accept="image/*" onChange={handleImageChange} />
-            <small>Файл сохранится в public/products/</small>
+            <label>Изображение (имя файла)</label>
+            <input type="text" name="image" value={formData.image} onChange={handleChange} placeholder="notf.jpg" />
+            <small>Файл должен лежать в public/products/</small>
           </div>
           
           <div className="form-actions">
             <button type="submit" className="btn-save" disabled={loading}>
-              {loading ? 'Сохранение...' : '💾 Сохранить'}
+              {loading ? 'Сохранение...' : 'Сохранить'}
             </button>
             <button type="button" className="btn-cancel" onClick={() => navigate('/')}>
               ✕ Отмена

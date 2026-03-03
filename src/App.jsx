@@ -1,19 +1,32 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useState } from 'react'
-import './App.css'
 import Login from './views/Login'
 import MainPage from './views/MainPage'
+import AddProduct from './views/AddProduct'
+import './App.css'
 
 function App() {
-  // Состояние: кто сейчас вошёл (null = никто)
   const [currentUser, setCurrentUser] = useState(null)
 
-  // Если пользователь вошёл — показываем главную
-  if (currentUser) {
-    return <MainPage user={currentUser} onLogout={() => setCurrentUser(null)} />
+  if (!currentUser) {
+    return <Login onLogin={setCurrentUser} />
   }
 
-  // Иначе — страницу входа
-  return <Login onLogin={setCurrentUser} />
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainPage user={currentUser} onLogout={() => setCurrentUser(null)} />} />
+        <Route 
+          path="/add-product" 
+          element={<AddProduct user={currentUser} onLogout={() => setCurrentUser(null)} isEdit={false} />} 
+        />
+        <Route 
+          path="/edit-product/:productId" 
+          element={<AddProduct user={currentUser} onLogout={() => setCurrentUser(null)} isEdit={true} />} 
+        />
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
 export default App

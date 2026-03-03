@@ -1,7 +1,7 @@
 import notFoundImage from '../assets/notf.jpg'
 const images = import.meta.glob('../assets/products/*.{jpg,jpeg,png,gif}', { eager: true })
 
-function ProductCard({ product }) {
+function ProductCard({ product, isAdmin, onEdit, onDelete }) {
   // получения пути к картинке
   const getImageUrl = (imageName) => {
     if (!imageName || imageName === 'notf') {
@@ -30,8 +30,8 @@ function ProductCard({ product }) {
     : originalPrice
     const hasDiscount = discount > 0
 
-    const isHighDiscount = discount > 15
-    const isOutOfStock = product.quantity === 0 || product.status === 0
+    // const isHighDiscount = discount > 15
+    // const isOutOfStock = product.quantity === 0 || product.status === 0
 
   return (
     <div className="product-card">
@@ -45,6 +45,34 @@ function ProductCard({ product }) {
             e.target.onerror = null
           }}
         />
+
+        {/* 🔧 КНОПКИ АДМИНА — только если isAdmin=true */}
+        {isAdmin && (
+          <div className="admin-buttons">
+            <button 
+              className="btn-admin btn-edit" 
+              onClick={(e) => {
+                e.stopPropagation()
+                onEdit?.(product.id_product)
+              }}
+              title="Редактировать"
+            >
+              ✏️
+            </button>
+            <button 
+              className="btn-admin btn-delete" 
+              onClick={(e) => {
+                e.stopPropagation()
+                if (window.confirm('Удалить этот товар?')) {
+                  onDelete?.(product.id_product)
+                }
+              }}
+              title="Удалить"
+            >
+              🗑️
+            </button>
+          </div>
+        )}
         
       </div>
 
@@ -64,8 +92,8 @@ function ProductCard({ product }) {
           </span>
         </div>
         
-            {/* 🔹 Цена со скидкой */}
-            <div className="product-price">
+        {/* 🔹 Цена со скидкой */}
+        <div className="product-price">
             {hasDiscount ? (
                 <>
                 {/* Старая цена — с подписью, красная, зачёркнутая */}
@@ -84,7 +112,7 @@ function ProductCard({ product }) {
                     <span className="price-final">{originalPrice} ₽</span>
                 </div>
             )}
-            </div>
+        </div>
       </div>
     </div>
   )
