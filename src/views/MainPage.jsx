@@ -55,14 +55,38 @@ function MainPage({ user, onLogout }) {
   }
 
   // 🔹 Удаление товара
-  const handleDelete = async (productId) => {
+  // 🔹 Удаление товара (без тостов, через alert)
+    const handleDelete = async (productId) => {
     if (!window.confirm('Удалить этот товар?')) return
+
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/products/${productId}`, { method: 'DELETE' })
-      if (!res.ok) throw new Error('Не удалось удалить')
-      fetchProducts() // Обновить список
-    } catch (err) { alert('Ошибка: ' + err.message) }
-  }
+        const res = await fetch(`http://127.0.0.1:8000/api/products/${productId}`, { 
+        method: 'DELETE' 
+        })
+        
+        // 🔹 Обработка статусов через alert
+        if (res.status === 409) {
+        alert('⚠️ Товар нельзя удалить: он присутствует в заказе')
+        return
+        }
+        
+        if (res.status === 404) {
+        alert('❌ Товар не найден')
+        return
+        }
+        
+        if (!res.ok) {
+        throw new Error('Не удалось удалить товар')
+        }
+        
+        // ✅ Успех
+        alert('✅ Товар удалён')
+        fetchProducts() // Перезагружаем список
+        
+    } catch (err) {
+        alert('❌ Ошибка: ' + err.message)
+    }
+    }
 
   // 🔹 Переход на редактирование
   const handleEdit = (productId) => {
