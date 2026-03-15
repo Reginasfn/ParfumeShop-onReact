@@ -1,5 +1,7 @@
-function Header({ user, onLogout, onAdd }) {
-  // Роли: 0=гость, 1=админ, 2=менеджер, 3=клиент
+import { Link } from "react-router-dom"
+
+function Header({ user, onLogout, onAdd, onCart }) {
+
   const getRoleName = (role) => {
     const roles = {
       0: 'Гость',
@@ -9,26 +11,40 @@ function Header({ user, onLogout, onAdd }) {
     return roles[role] || 'Пользователь'
   }
 
-//   // Обработка кнопки "Добавить"
-//   const handleAdd = () => {
-//     alert('Здесь будет форма добавления товара')
-//   }
-
   return (
     <header className="header">
-      {/* Слева — название магазина */}
+
+      {/* КЛИКАБЕЛЬНЫЙ ЛОГОТИП */}
       <div className="header-left">
-        <h1>Parfume Shop</h1>
+        <Link to="/" className="logo-link">
+          <h1>Parfume Shop</h1>
+        </Link>
       </div>
 
       <div className="header-user">
-        <span className="user-name">{getRoleName(user.role)}: {user.name_user}</span>
+        <span className="user-name">
+          {getRoleName(user.role)}: {user.name_user}
+        </span>
       </div>
 
-      {/* Справа — кнопки */}
       <div className="header-right">
-        {user.role === 1 && onAdd && <button className="btn-add" onClick={onAdd}>+ Добавить</button>}
-        <button className="btn-back" onClick={onLogout}>Выйти ⇨</button>
+
+        {user.role === 2 && (
+          <button className="btn-cart" onClick={onCart}>
+            🛒 Корзина
+          </button>
+        )}
+
+        {user.role === 1 && onAdd && (
+          <button className="btn-add" onClick={onAdd}>
+            + Добавить
+          </button>
+        )}
+
+        <button className="btn-back" onClick={onLogout}>
+          Выйти ⇨
+        </button>
+
       </div>
     </header>
   )

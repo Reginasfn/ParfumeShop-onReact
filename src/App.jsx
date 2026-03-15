@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Login from './views/Login'
 import MainPage from './views/MainPage'
 import AddProduct from './views/AddProduct'
+import CartPage from './views/CartPage'
 import './App.css'
 
 function App() {
@@ -23,6 +24,10 @@ function App() {
         <Route 
           path="/edit-product/:productId" 
           element={<AddProduct user={currentUser} onLogout={() => setCurrentUser(null)} isEdit={true} />} 
+        />
+        <Route 
+          path="/cart" 
+          element={<CartPage user={currentUser} onLogout={() => setCurrentUser(null)} />} 
         />
       </Routes>
     </BrowserRouter>

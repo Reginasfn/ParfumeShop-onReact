@@ -18,6 +18,10 @@ function MainPage({ user, onLogout }) {
   useEffect(() => { fetchBrands() }, [])
   useEffect(() => { fetchProducts() }, [search, selectedBrand, sortBy])
 
+  const handleCart = () => {
+    navigate('/cart')
+  }
+
   const fetchProducts = async () => {
     setLoading(true)
 
@@ -54,8 +58,31 @@ function MainPage({ user, onLogout }) {
     }
   }
 
+  const handleAddToCart = async (productId) => {
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/cart/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email_user: user.email_user,
+          id_product: productId,
+          quantity: 1
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Ошибка добавления')
+      }
+
+      alert('Товар добавлен в корзину')
+    } catch (err) {
+      alert(err.message)
+    }
+  }
+
   // 🔹 Удаление товара
-  // 🔹 Удаление товара (без тостов, через alert)
     const handleDelete = async (productId) => {
     if (!window.confirm('Удалить этот товар?')) return
 
@@ -86,7 +113,7 @@ function MainPage({ user, onLogout }) {
     } catch (err) {
         alert('❌ Ошибка: ' + err.message)
     }
-    }
+  }
 
   // 🔹 Переход на редактирование
   const handleEdit = (productId) => {
@@ -103,7 +130,12 @@ function MainPage({ user, onLogout }) {
 
   return (
     <div className="main-page">
-      <Header user={user} onLogout={onLogout} onAdd={handleAdd} />
+      <Header 
+        user={user} 
+        onLogout={onLogout} 
+        onAdd={handleAdd} 
+        onCart={handleCart}
+      />
 
       <main className="content">
         <h2>Каталог товаров</h2>
@@ -159,10 +191,12 @@ function MainPage({ user, onLogout }) {
         {!loading && !error && products.length > 0 && (
           <div className="products-grid">
             {products.map((product) => (
-              <ProductCard 
-                key={product.id_product} 
+              <ProductCard
+                key={product.id_product}
                 product={product}
                 isAdmin={user?.role === 1}
+                isClient={user?.role === 2}
+                onAddToCart={handleAddToCart}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
               />

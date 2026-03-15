@@ -1,7 +1,7 @@
 import notFoundImage from '../assets/notf.jpg'
 const images = import.meta.glob('../assets/products/*.{jpg,jpeg,png,gif}', { eager: true })
 
-function ProductCard({ product, isAdmin, onEdit, onDelete }) {
+function ProductCard({ product, isAdmin, isClient, onEdit, onDelete, onAddToCart }) {
   // получения пути к картинке
   const getImageUrl = (imageName) => {
     if (!imageName || imageName === 'notf') {
@@ -114,6 +114,15 @@ function ProductCard({ product, isAdmin, onEdit, onDelete }) {
             )}
         </div>
       </div>
+
+      {isClient && (
+        <button
+          className="btn-cart"
+          onClick={() => onAddToCart(product.id_product)}
+        >
+          В корзину 🛒
+        </button>
+      )}
     </div>
   )
 }

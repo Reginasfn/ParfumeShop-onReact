@@ -383,3 +383,248 @@
 .btn-cancel {
   flex: 1; padding: 12px; background: #f0f0f0; color: #666; border: 2px solid #ddd; border-radius: 5px; font-size: 16px; cursor: pointer;
 }
+
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo-link:hover {
+  cursor: pointer;
+}
+
+.cart-title{
+
+  margin-bottom:30px;
+
+}
+
+
+.cart-layout{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap: 50px;
+  align-items:start;
+}
+
+
+.cart-products{
+
+  display:flex;
+  flex-direction:column;
+  gap:35px;
+
+}
+
+
+/* карточка товара */
+
+.cart-card{
+  display:flex;
+  align-items:center;
+  gap:45px;
+  padding:45px;
+  border-radius:14px;
+  background:white;
+  box-shadow:0 8px 25px rgba(0,0,0,0.07);
+  transition:0.5s;
+  border-color: #7a3f3a;
+  width: 800px;
+}
+
+.cart-card:hover{
+
+  transform:translateY(-3px);
+
+}
+
+
+.cart-image img{
+  width:130px;
+  height:130px;
+  object-fit:cover;
+  border-radius:5px;
+}
+
+.cart-info{
+  flex:1;
+}
+
+
+.cart-info h3{
+  margin:0;
+  font-size:20px;
+}
+
+
+.cart-price{
+  font-size:20px;
+  font-weight:bold;
+  margin-top:8px;
+}
+
+
+.cart-stock{
+
+margin-top:20px;
+
+color:gray;
+
+}
+
+
+/* кнопки */
+
+.cart-actions{
+
+display:flex;
+flex-direction:column;
+
+gap:30px;
+
+align-items:center;
+
+}
+
+
+.cart-quantity{
+
+display:flex;
+align-items:center;
+
+gap:20px;
+
+}
+
+
+.cart-quantity button{
+
+width:50px;
+height:50px;
+
+border:none;
+
+background:#f1f1f1;
+
+border-radius:6px;
+
+font-size:17px;
+font-weight: bold;
+
+cursor:pointer;
+
+}
+
+
+.cart-quantity span{
+
+font-size:20px;
+font-weight:bold;
+
+}
+
+
+.btn-remove{
+
+background:#ff4d4f;
+
+border:none;
+
+color:white;
+
+padding:8px 16px;
+
+border-radius:6px;
+
+cursor:pointer;
+
+}
+
+
+/* итог */
+
+.cart-summary{
+
+  background:white;
+
+  padding:80px;
+
+  border-radius:14px;
+
+  box-shadow:0 8px 25px rgba(0,0,0,0.07);
+
+  top:0px;
+
+}
+
+
+.summary-row{
+  display:flex;
+  justify-content:space-between;
+  margin-top:30px;
+  font-size:18px;
+
+}
+
+
+.summary-price{
+
+font-size:22px;
+
+font-weight:bold;
+
+}
+
+
+.btn-order{
+
+  width:100%;
+
+  margin-top:25px;
+
+  padding:14px;
+
+  border:none;
+
+  background:black;
+
+  color:white;
+
+  border-radius:8px;
+
+  font-size:16px;
+
+  cursor:pointer;
+
+  transition:0.2s;
+
+}
+
+.btn-order:hover{
+
+background:#333;
+
+}
+
+.cart-removing {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: all 0.3s ease;
+}
+
+.btn-clear-cart {
+  margin-top: 12px;
+  background: #eee;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.saving {
+  color: green;
+}
+
+.total {
+  font-weight: bold;
+  font-size: 18px;
+}
