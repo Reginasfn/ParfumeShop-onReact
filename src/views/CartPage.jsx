@@ -1,17 +1,25 @@
+// 👇 1. ДОБАВЬТЕ useNavigate В ИМПОРТ
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"  // 👈 ВОТ ЭТО!
 import Header from "../components/Header"
 import CartItemCard from "../components/CartItemCard"
 
 function CartPage({ user, onLogout }) {
-
+  
+  // 👇 2. ОБЪЯВИТЕ navigate СРАЗУ ПОСЛЕ СТЭЙТОВ
   const [cartItems, setCartItems] = useState([])
   const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()  // 👈 ВОТ ЭТО!
 
   useEffect(() => {
     if (!user?.email_user) return
     fetchCart()
   }, [user])
 
+  // 👇 3. ТЕПЕРЬ ЭТА ФУНКЦИЯ БУДЕТ РАБОТАТЬ
+  const handleOrders = () => navigate('/orders')
+
+  // ... остальной код без изменений ...
 
   const fetchCart = async () => {
 
@@ -142,7 +150,13 @@ function CartPage({ user, onLogout }) {
 
     <div className="cart-page">
 
-      <Header user={user} onLogout={onLogout} />
+      <Header 
+        user={user}
+        onLogout={onLogout}
+        onCart={() => navigate('/cart')}
+        onOrders={() => navigate('/orders')}
+        onAdd={() => navigate('/add-product')}
+      />
 
       <main className="content">
 

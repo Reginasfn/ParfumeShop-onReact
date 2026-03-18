@@ -4,6 +4,7 @@ import Login from './views/Login'
 import MainPage from './views/MainPage'
 import AddProduct from './views/AddProduct'
 import CartPage from './views/CartPage'
+import OrdersPage from './views/OrdersPage'
 import './App.css'
 
 function App() {
@@ -29,6 +30,12 @@ function App() {
           path="/cart" 
           element={<CartPage user={currentUser} onLogout={() => setCurrentUser(null)} />} 
         />
+
+        <Route
+          path="/orders"
+          element={<OrdersPage user={currentUser} onLogout={() => setCurrentUser(null)} />}
+        />
+
       </Routes>
     </BrowserRouter>
   )

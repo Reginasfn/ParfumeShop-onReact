@@ -628,3 +628,36 @@ background:#333;
   font-weight: bold;
   font-size: 18px;
 }
+
+.orders-title {
+  margin-bottom: 20px;
+}
+
+.order-card {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  background: white;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.order-products {
+  margin-bottom: 15px;
+}
+
+.order-product {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.order-total {
+  font-size: 18px;
+  font-weight: bold;
+}

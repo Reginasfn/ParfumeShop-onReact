@@ -22,6 +22,11 @@ function MainPage({ user, onLogout }) {
     navigate('/cart')
   }
 
+  // 👇 ДОБАВЬТЕ ЭТУ ФУНКЦИЮ:
+  const handleOrders = () => {
+    navigate('/orders')
+  }
+
   const fetchProducts = async () => {
     setLoading(true)
 
@@ -135,6 +140,7 @@ function MainPage({ user, onLogout }) {
         onLogout={onLogout} 
         onAdd={handleAdd} 
         onCart={handleCart}
+        onOrders={handleOrders}
       />
 
       <main className="content">

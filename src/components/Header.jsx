@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 
-function Header({ user, onLogout, onAdd, onCart }) {
+function Header({ user, onLogout, onAdd, onCart, onOrders }) {
 
   const getRoleName = (role) => {
     const roles = {
@@ -13,7 +13,6 @@ function Header({ user, onLogout, onAdd, onCart }) {
 
   return (
     <header className="header">
-
       {/* КЛИКАБЕЛЬНЫЙ ЛОГОТИП */}
       <div className="header-left">
         <Link to="/" className="logo-link">
@@ -23,19 +22,24 @@ function Header({ user, onLogout, onAdd, onCart }) {
 
       <div className="header-user">
         <span className="user-name">
-          {getRoleName(user.role)}: {user.name_user}
+          {user ? `${getRoleName(user.role)}: ${user.name_user}` : "Гость"}
         </span>
       </div>
 
       <div className="header-right">
-
-        {user.role === 2 && (
+        {user?.role === 2 && (
           <button className="btn-cart" onClick={onCart}>
-            🛒 Корзина
+            Корзина
           </button>
         )}
 
-        {user.role === 1 && onAdd && (
+        {user?.role === 2 && (
+          <button className="btn-orders" onClick={onOrders}>
+            Мои заказы
+          </button>
+        )}
+
+        {user?.role === 1 && onAdd && (
           <button className="btn-add" onClick={onAdd}>
             + Добавить
           </button>
@@ -44,7 +48,6 @@ function Header({ user, onLogout, onAdd, onCart }) {
         <button className="btn-back" onClick={onLogout}>
           Выйти ⇨
         </button>
-
       </div>
     </header>
   )
